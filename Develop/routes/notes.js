@@ -15,6 +15,21 @@ fs.readFile("db/db.json", "utf8", (err, data) => {
 
     app.post("/api/notes", function(req, res) {
         let newNote = req.body;
+        notes.push(newNote);
+        appendNotes();
     });
-})
+
+    app.get("/api/notes/:id", function(req, res) {
+        res.json(notes[req.params.id]);
+    });
+
+    
+
+    function appendNotes() {
+        fs.writeFile("db/db.json", JSON.stringify(notes, '\t'), err => {
+            if (err) console.log("error");
+            return true;
+        })
+    }
+});
 module.exports = app;
