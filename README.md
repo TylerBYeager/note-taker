@@ -11,6 +11,7 @@
   
   ## Description  
   A working Note Taker app. Clicking on the notes button while on the main index.html page will redirect the user to a new note.html page. This page allows a user to type in note with a title and save it to the left side. These notes have data persistence (will remain even after the page is reloaded) and can even be deleted if the user so desires!  
+![snapshot](https://user-images.githubusercontent.com/89880190/138403474-def971a3-0173-42bd-ac65-ba6a8ca1e00e.png)
 
 
   ## Code Snippets
