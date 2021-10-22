@@ -8,5 +8,13 @@ fs.readFile("db/db.json", "utf8", (err, data) => {
 
     let notes = JSON.parse(data);
     console.log(notes);
+
+    app.get("/api/notes", function(req, res) {
+        res.json(notes);
+    });
+
+    app.post("/api/notes", function(req, res) {
+        let newNote = req.body;
+    });
 })
 module.exports = app;
