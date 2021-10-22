@@ -1,130 +1,130 @@
-# 11 Express.js: Note Taker
+# Express.js: Note Taker 
 
-## Your Task
-
-Your assignment is to modify starter code to create an application called Note Taker that can be used to write and save notes. This application will use an Express.js back end and will save and retrieve note data from a JSON file.
-
-The application’s front end has already been created. It's your job to build the back end, connect the two, and then deploy the entire application to Heroku.
-
-
-## User Story
-
-```
-AS A small business owner
-I WANT to be able to write and save notes
-SO THAT I can organize my thoughts and keep track of tasks I need to complete
-```
+  # Table of Contents
+  * [Description](#description)
+  * [Installation](#installation)
+  * [Usage](#usage)
+  * [License](#license)
+  * [Contributions](#contributions)
+  * [Tests](#tests) (not available in this project)
+  * [Questions](#questions)
+  
+  ## Description  
+  A working Note Taker app. Clicking on the notes button while on the main index.html page will redirect the user to a new note.html page. This page allows a user to type in note with a title and save it to the left side. These notes have data persistence (will remain even after the page is reloaded) and can even be deleted if the user so desires!  
 
 
-## Acceptance Criteria
+  ## Code Snippets
+  Here are some code snippets and what they accomplished. This first code snippet is the entirety of the server.js file! This file imported several tools like express, path, and fs in order to establish a working server for the project to live on. The res.sendFIle with notes.html is what allowed users to redirect to the notes.html page.
+  ```
+  const express = require("express");
+  const path = require("path");
+  const fs = require("fs");
+  const api = require("./routes/index.js");
 
-```
-GIVEN a note-taking application
-WHEN I open the Note Taker
-THEN I am presented with a landing page with a link to a notes page
-WHEN I click on the link to the notes page
-THEN I am presented with a page with existing notes listed in the left-hand column, plus empty fields to enter a new note title and the note’s text in the right-hand column
-WHEN I enter a new note title and the note’s text
-THEN a Save icon appears in the navigation at the top of the page
-WHEN I click on the Save icon
-THEN the new note I have entered is saved and appears in the left-hand column with the other existing notes
-WHEN I click on an existing note in the list in the left-hand column
-THEN that note appears in the right-hand column
-WHEN I click on the Write icon in the navigation at the top of the page
-THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
-```
+  const PORT = process.env.port || 3001;
 
+  const app = express();
 
-## Mock-Up
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-The following images show the web application's appearance and functionality:
+  app.use(express.static("public"));
 
-![Existing notes are listed in the left-hand column with empty fields on the right-hand side for the new note’s title and text.](./Assets/11-express-homework-demo-01.png)
+  app.get('/', (req, res) =>
+    res.sendFile(path.join(__dirname, '/public/index.html'))
+  );
 
-![Note titled “Balance accounts” reads, “Balance account books by end of day Monday,” with other notes listed on the left.](./Assets/11-express-homework-demo-02.png)
+  app.get('/notes', (req, res) => 
+    res.sendFile(path.join(__dirname, '/public/notes.html'))
+  );
+  app.use('/', api);
 
+  app.listen(PORT, () =>
+    console.log(`App listening at http://localhost:${PORT}`)
+  );
+  ```
 
-## Getting Started
+  This next snippet is the entirety of the index.js page. This file served as a sort of middleware that connected the notes.js page to the live server.   
+  ```
+  const express = require("express");
 
-On the back end, the application should include a `db.json` file that will be used to store and retrieve notes using the `fs` module.
-
-The following HTML routes should be created:
-
-* `GET /notes` should return the `notes.html` file.
-
-* `GET *` should return the `index.html` file.
-
-The following API routes should be created:
-
-* `GET /api/notes` should read the `db.json` file and return all saved notes as JSON.
-
-* `POST /api/notes` should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client. You'll need to find a way to give each note a unique id when it's saved (look into npm packages that could do this for you).
+  const notesRouter = require("./notes");
 
 
-## Bonus
+  const app = express();
 
-You haven’t learned how to handle DELETE requests, but this application offers that functionality on the front end. As a bonus, try to add the DELETE route to the application using the following guideline:
+  app.use("/api", notesRouter);
 
-* `DELETE /api/notes/:id` should receive a query parameter that contains the id of a note to delete. To delete a note, you'll need to read all notes from the `db.json` file, remove the note with the given `id` property, and then rewrite the notes to the `db.json` file.
+  module.exports = app;
 
+  ```
 
-## Grading Requirements
-
-This homework is graded based on the following criteria: 
-
-
-### Technical Acceptance Criteria: 40%
-
-* Satisfies all of the preceding acceptance criteria plus the following:
-
-  * Application front end must connect to an Express.js back end.
-
-  * Application back end must store notes that have a unique id in a JSON file.
-
-  * Application must be deployed to Heroku.
+  Lastly, this snippet is just a small part of the notes.js file. The beginning lines of code are used to import various tools as well as the db.json database file. This file was placed in a variable that was then used throughout notes.js to receive the information submitted on the front end, save it to the database on the back end, and then display the newly updated page. The appendNotes function is what actually wrote everything to the db.json file. 
+  ```
+  const app = require("express").Router();
+  const fs = require("fs");
+  const path = require("path");
+  const notes = require("../db/db.json");
 
 
-### Deployment: 36%
+  app.get("/notes", function (req, res) {
+      res.json(notes);
+  });
 
-* Application deployed at live URL.
+  app.post("/notes", function (req, res) {
+      let newNote = req.body;
+      notes.push(newNote);
+      console.log(notes);
+      appendNotes();
+      res.json(notes);
+  });
+  ```
 
-* Application loads with no errors.
+  ## Installation
+  To install:
+  ```
+  Once you have a working SSH key added to your Github account, go to the note-taker repository. Click the green "code" button on the top right and clonecopy the @github.com link with the SSH key option to your clipboard. 
+  ```
 
-* Application GitHub URL submitted.
+  Next, 
+  ```
+  Open Gitbash or Terminal and navigate to a directory that you would like to add the cloned repository. Once in your desired directory type in
+  "git clone 'right click to paste'" and press enter. This will clone the repository onto your personal machine.
+  ```
+  Lastly, 
+  ```
+  Type 'ls' into your Gitbash or Terminal to see a list of items within the directory. If you have done the previous steps correctly then you should see a respository titled "note-taker". Simply type in "code ." to open it in your code editor of choice and have fun!
 
-* GitHub repository contains application code.
+  ```
 
+  ## Usage
+  Any user can access this generator to create a fairly basic stylized html that contains card elements showing the inputted employee information. This code can be tweaked to include additional information if required. 
 
-### Application Quality: 11%
+  ## Built With
+  * [JAVASCRIPT](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+  * [NODE.JS](https://nodejs.org/en/)
+  * [EXPRESS.JS](https://expressjs.com/)
+  * [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
+  * [CSS](https://www.w3schools.com/css/)
 
-* Application console is free of errors.
+  ## Deployed Link
+* [See the Live Site!](https://tylerbyeager.github.io/note-taker/) 
 
+## Authors
 
-### Repository Quality: 13%
+* **Tyler Brian Yeager**
 
-* Repository has a unique name.
+- [Link to Repo Site](https://github.com/TylerBYeager/note-taker)
+- [Link to Github](https://github.com/TylerBYeager/tylerbyeager.github.io)
+- [Link to LinkedIn](https://www.linkedin.com/in/tyler-yeager-611926213/)
 
-* Repository follows best practices for file structure and naming conventions.
+## Contributions
 
-* Repository follows best practices for class/id naming conventions, indentation, quality comments, etc.
+- UC Berkeley Coding Bootcamp & my pair programmers this week
+- BCS learning assistants helping me get "unstuck" and gain a better understanding in the process
 
-* Repository contains multiple descriptive commit messages.
+## License
+![License](https://img.shields.io/badge/License-Apache-blue.svg)
 
-* Repository contains quality README file with description, screenshot, and link to deployed application.
-
-
-### Bonus: +10 Points
-
-* Application allows users to delete notes.
-
-
-## Review
-
-You are required to submit BOTH of the following for review:
-
-* The URL of the functional, deployed application.
-
-* The URL of the GitHub repository, with a unique name and a README describing the project.
-
-- - -
-© 2021 Trilogy Education Services, LLC, a 2U, Inc. brand. Confidential and Proprietary. All Rights Reserved.
+## Questions
+- wow_d2@hotmail.com
