@@ -28,6 +28,12 @@ app.get("*", function(req, res) {
     res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
+app.delete("/notes/:id", function(req, res) {
+    notes.splice(req.params.id, 1);
+    appendNotes();
+    res.json(notes);
+});    
+
 function appendNotes() {
     fs.writeFile("db/db.json", JSON.stringify(notes, '\t'), err => {
         if (err) console.log("error");
