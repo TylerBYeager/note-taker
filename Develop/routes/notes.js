@@ -13,7 +13,7 @@ app.post("/notes", function (req, res) {
     notes.push(newNote);
     console.log(notes);
     appendNotes();
-    return notes;
+    res.json(notes);
 });
 
 app.get("/notes/:id", function (req, res) {
@@ -24,9 +24,9 @@ app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "../public/notes.html"));
 });
 
-// app.post("/notes", function(req, res) {
-//     res.sendFile(path.join(__dirname, "../public/notes.html"));
-// });
+app.get("*", function(req, res) {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
+});
 
 function appendNotes() {
     fs.writeFile("db/db.json", JSON.stringify(notes, '\t'), err => {
